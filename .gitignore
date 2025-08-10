@@ -18,6 +18,10 @@ pids/
 .env
 .env.*.local
 
+# ML related
+ML/syntax_env/
+ML.egg-info/
+
 # Dependency directories
 jspm_packages/
 
