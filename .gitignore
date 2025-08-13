@@ -93,3 +93,14 @@ out/
 # Others
 *.swp
 *.swo
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Test / coverage caches
+.pytest_cache/
+.ipynb_checkpoints/
+*.ipynb_checkpoints
