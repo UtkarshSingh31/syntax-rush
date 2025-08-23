@@ -1,12 +1,11 @@
 import Image from "next/image";
 import NavBar from "./components/navBar";
-import Prog from "./components/problem/prog";
+import Problem from "./components/problem/problem";
 
 export default function Home() {
   return (
     <div>
-      <NavBar />
-      <Prog />
+      <Problem />
     </div>
   );
 }
