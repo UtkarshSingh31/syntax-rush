@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const battleSchema = new mongoose.Schema({
+const individualBattleSchema = new mongoose.Schema({
   battletype: { 
     type: String, 
     enum: ["1v1_classic", "1v1_quick", "1v1_friendly"],
@@ -84,3 +84,5 @@ const battleSchema = new mongoose.Schema({
 }, { 
   timestamps: true
 });
+
+export const IndividualBattle = mongoose.model("IndividualBattle", individualBattleSchema);
