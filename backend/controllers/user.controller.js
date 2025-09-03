@@ -5,9 +5,8 @@ import ApiResponse from "../utils/ApiResponse.js";
 
 
 
-const Signin =  AsyncHandler(aysnc(req,res)=>{
+const Signin =  AsyncHandler(async(req,res)=>{
   const {email,password}=req.body;
-  if(!email||!password){
-    
-  }
 })
+
+export {Signin};
