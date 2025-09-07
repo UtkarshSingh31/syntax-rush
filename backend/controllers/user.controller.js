@@ -237,6 +237,42 @@ const Register = AsyncHandler(async(req,res)=>{
     },"new user signedUp successfully")
   )
 });
+const login = AsyncHandler(async(req,res)=>{
+  const {email,password}=req.body
+  if(!email || !password){
+    throw new ApiError(400,"email and password are required")
+  }
+  const user = await User.findOne({email}).select("+password +refreshToken")
+  if(!user){
+    throw new ApiError(400,"invalid email or password")
+  }
+  const isPasswordMatched = await user.isPasswordCorrect(password)
+  if(!isPasswordMatched){
+    throw new ApiError(400,"invalid email or password")
+  }
+  const {accessToken,refreshToken} = await generateAccessandRefreshTokens(user._id);
+  const options = {
+    httpOnly:true,
+    secure:true
+  };
+  return res
+  .status(200)
+  .cookie("accessToken",accessToken,options)
+  .cookie("refreshToken",refreshToken,options)
+  .json(
+    new ApiResponse(200,{
+      user: {
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        username: user.username,
+        isEmailVerified: user.isEmailVerified
+      },
+      accessToken,
+      refreshToken
+    },"user logged in successfully")
+  )
+})
 
 const Logout = AsyncHandler(async(req,res)=>{
   await User.findByIdAndUpdate(
@@ -265,4 +301,4 @@ const Logout = AsyncHandler(async(req,res)=>{
   );
 });
 
-export {refreshAccessToken,Register,Logout,sendEmailVerificationOTP,verifyEmailOTP};
+export {refreshAccessToken,login,Register,Logout,sendEmailVerificationOTP,verifyEmailOTP};
