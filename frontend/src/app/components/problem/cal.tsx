@@ -55,7 +55,7 @@ export default function Cal() {
   }
 
   return (
-    <div className="flex flex-col  h-full bg-white border-4 border-[#EBEBF3] rounded-3xl mt-10 mr-10 p-0">
+    <div className="flex flex-col  h-full bg-white border-4 border-[#EBEBF3] rounded-3xl mt-10  p-0">
       <div className="flex items-center justify-between px-12 pt-6">
         <button
           className="text-2xl text-gray-500 font-light hover:text-gray-700"

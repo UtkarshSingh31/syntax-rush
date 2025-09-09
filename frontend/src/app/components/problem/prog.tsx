@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 function CircularProgress({
@@ -27,7 +28,7 @@ function CircularProgress({
 
   return (
     <div
-      className="relative flex items-center justify-center mx-8"
+      className="relative scale-[65%] md:scale-100 flex items-center justify-center "
       style={{ width: svgSize, height: svgSize }}
     >
       <svg height={svgSize} width={svgSize}>
@@ -40,7 +41,7 @@ function CircularProgress({
           cy={radius + padding}
         />
         <circle
-          stroke="#D4B200"
+          stroke="#6266F0"
           fill="transparent"
           strokeWidth={stroke}
           strokeLinecap="round"
@@ -52,11 +53,13 @@ function CircularProgress({
           style={{ transition: "stroke-dashoffset 0.5s" }}
           transform={`rotate(-90 ${radius + padding} ${radius + padding})`}
         />
-        <circle cx={dotX} cy={dotY} r={dotRadius} fill="#D4B200" />
+        <circle cx={dotX} cy={dotY} r={dotRadius} fill="#6266F0" />
       </svg>
-      <div className="absolute p-5 top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
         <span className="text-gray-500 text-xs mb-1">{label}</span>
-        <span className="text-gray-900 text-3xl font-bold">{sublabel}</span>
+        <span className="text-gray-900 text-2xl sm:text-3xl font-bold">
+          {sublabel}
+        </span>
       </div>
     </div>
   );
@@ -64,33 +67,35 @@ function CircularProgress({
 
 export default function Prog() {
   return (
-    <div className="flex justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl h-full m-10 px-20 py-8">
-      <CircularProgress
-        value={130}
-        max={250}
-        label="Total questions"
-        sublabel="130/250"
-      />
+    <div className="flex mt-10 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6">
+      <div className="flex flex-row md:w-[60%] items-center md:justify-between">
+        <CircularProgress
+          value={130}
+          max={250}
+          label="Total questions"
+          sublabel="130/250"
+        />
 
-      <CircularProgress
-        value={95}
-        max={100}
-        label="Accuracy Rate"
-        sublabel="95%"
-      />
+        <CircularProgress
+          value={95}
+          max={100}
+          label="Accuracy Rate"
+          sublabel="95%"
+        />
+      </div>
 
-      <div className="flex flex-col ml-8 text-center items-center">
-        <div className="mb-6">
-          <span className="text-[#D4B200] text-3xl font-semibold">
+      <div className="flex scale-90 md:scale-100 flex-col mt-6 text-center items-center">
+        <div className="mb-4">
+          <span className="text-[#6266F0] text-2xl sm:text-3xl font-semibold">
             <span className="text-gray-900">3h</span> 40min
           </span>
-          <div className="text-gray-400 text-sm">this week</div>
+          <div className="text-gray-400 text-xs sm:text-sm">this week</div>
         </div>
         <div>
-          <span className="text-[#D4B200] text-3xl font-semibold">
+          <span className="text-[#6266F0] text-2xl sm:text-3xl font-semibold">
             <span className="text-gray-900">6d 9h</span> 25min
           </span>
-          <div className="text-gray-400 text-sm">this month</div>
+          <div className="text-gray-400 text-xs sm:text-sm">this month</div>
         </div>
       </div>
     </div>
