@@ -46,7 +46,7 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col  bg-white border-4 border-[#EBEBF3] rounded-3xl h-full mt-10  pb-3 ">
+    <div className="flex flex-col  bg-white border-4 border-[#EBEBF3] rounded-r-3xl h-full my-2 pb-3 ">
       <h1 className="text-center bg-slate-400/10 p-2 rounded-t-xl  text-gray-700 font-semibold mb-4 ">
         Global Chat
       </h1>

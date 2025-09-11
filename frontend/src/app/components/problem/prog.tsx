@@ -67,7 +67,7 @@ function CircularProgress({
 
 export default function Prog() {
   return (
-    <div className="flex mt-10 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6">
+    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6">
       <div className="flex flex-row md:w-[60%] items-center md:justify-between">
         <CircularProgress
           value={130}

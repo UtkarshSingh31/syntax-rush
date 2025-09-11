@@ -55,8 +55,8 @@ export default function Cal() {
   }
 
   return (
-    <div className="flex flex-col  h-full bg-white border-4 border-[#EBEBF3] rounded-3xl mt-10  p-0">
-      <div className="flex items-center justify-between px-12 pt-6">
+    <div className="flex flex-col  h-full bg-white border-4 border-[#EBEBF3] rounded-3xl mt-5  p-0">
+      <div className="flex items-center justify-between px-5 pt-6">
         <button
           className="text-2xl text-gray-500 font-light hover:text-gray-700"
           onClick={prevMonth}
@@ -73,7 +73,7 @@ export default function Cal() {
           &gt;
         </button>
       </div>
-      <div className="grid grid-cols-7 gap-0 px-6 mt-4 mb-2">
+      <div className="grid grid-cols-7 gap-0 ">
         {days.map((d) => (
           <div key={d} className="text-center text-gray-400  text-md pt-4">
             {d}
@@ -81,7 +81,7 @@ export default function Cal() {
         ))}
       </div>
 
-      <div className="flex-1 grid grid-cols-7 px-6 pb-6">
+      <div className="flex-1 grid grid-cols-7 ">
         {calendarDays.map((day, i) =>
           day ? (
             <div

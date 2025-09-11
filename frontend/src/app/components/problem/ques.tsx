@@ -42,7 +42,7 @@ const difficultyColor = {
 
 export default function Ques() {
   return (
-    <div className="h-full px-4 sm:px-8 mt-20 mb-10">
+    <div className="h-full px-4 sm:px-8  mb-10">
       <div className="flex items-center mb-4 gap-2">
         <div className="relative flex-1">
           <input
