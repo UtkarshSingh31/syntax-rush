@@ -15,11 +15,11 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-[#F0F1F6] h-[8vh]">
+    <nav className="flex items-center justify-between px-6 py-7 bg-[#F0F1F6] h-[8vh] ">
       <div className="flex items-center gap-2">
         <svg
-          width="42"
-          height="45"
+          width="40"
+          height="40"
           viewBox="0 0 52 57"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -49,13 +49,13 @@ export default function NavBar() {
           </defs>
         </svg>
 
-        <span className="font-bold text-[22px] sm:text-[27px] text-gray-800">
+        <span className="font-bold text-[22px] sm:text-[27px] text-gray-800 ">
           <span className="text-gray-800">Syntax</span>
           <span className="text-[#6266F0]">Rush</span>
         </span>
       </div>
 
-      <div className="hidden md:flex flex-1 justify-center">
+      <div className="hidden md:flex flex-1 justify-center scale-90 ">
         <div className="flex gap-6 px-2 py-1 mr-[7%] mt-1 rounded-full border border-gray-400 bg-white/50 shadow-sm">
           {navLinks.map((link) => (
             <a
@@ -65,7 +65,7 @@ export default function NavBar() {
                 `px-5 py-2 rounded-full font-semibold transition active:bg-gray-800 active:text-white` +
                 (pathname === link.href
                   ? " bg-[#1F2937] text-white pt-2.5"
-                  : " hover:bg-gray-100 pt-3 text-[#484848]")
+                  : " hover:bg-gray-100 pt-2 text-[#484848]")
               }
             >
               {link.name}

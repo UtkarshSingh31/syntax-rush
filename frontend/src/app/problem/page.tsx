@@ -17,43 +17,43 @@ export default function Problem() {
     setTimeout(() => setShowQues(!showQues), 200);
   };
   return (
-    <div className="min-h-screen pb-10">
+    <div className="min-h-screen pb-10  ">
       <NavBar />
+    
 
-      <div className="hidden lg:grid grid-cols-5 grid-rows-5 gap-4 relative">
-        <div className="row-span-1 col-start-5 row-start-1 mr-10">
+      <div className="hidden lg:grid grid-cols-5 grid-rows-3  gap-4 scale-y-[96%] origin-top ">
+        <div className="row-span-1 col-start-5 row-start-1 mr-5">
           <Cal />
         </div>
-        <div className="col-start-5 row-start-2 mr-10">
+        <div className="col-start-5 row-start-2 mr-5">
           <Todays />
         </div>
 
         <div
-          className={`row-start-1 transition-transform duration-700  ${
-            showQues ? "col-span-3 col-start-2" : "col-span-4 col-start-1 ml-10"
-          }`}
+  className={` row-start-1 col-span-3 transition-all duration-700 ease-in-out ${
+    showChat ? "ml-0" : "-ml-72"
+  }`}
         >
           <Prog />
         </div>
 
-        {/* Ques */}
+   
         <div
-          className={`row-span-4 row-start-2 transition-transform duration-700  ${
-            showQues ? "col-span-3 col-start-2" : "col-span-4 col-start-1 ml-10"
-          }`}
-        >
-          <Ques />
-        </div>
+  className={`row-span-4 row-start-2 col-span-3 transition-all duration-700 ease-in-out ${
+    showChat ? "ml-0" : "-ml-72"
+  }`}
+>
+  <Ques />
+</div>
 
-        {/* Chat panel */}
+
         <div
-          className={`row-span-2 col-start-1 row-start-1  bg-gray-100  relative transform transition-transform duration-700 ease-in-out ${
+          className={`row-span-2 col-start-1 row-start-1  bg-gray-100  relative transform transition-transform duration-700 ease-in-out  ${
             showChat ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <Chat />
 
-          {/* Toggle button on edge of chat */}
           <button
             onClick={() => handleShow()}
             className={`absolute top-1/2 right-1 translate-x-full -translate-y-1/2 bg-[#fcfcff] text-slate-500  px-1 py-2 rounded-r transition-colors duration-300 hover:bg-gray-100  ${

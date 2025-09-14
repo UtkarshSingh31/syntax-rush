@@ -12,7 +12,7 @@ function CircularProgress({
   label: string;
   sublabel: string;
 }) {
-  const radius = 95;
+  const radius = 80;
   const stroke = 4;
   const dotRadius = 6;
   const padding = dotRadius + 2;
@@ -28,7 +28,7 @@ function CircularProgress({
 
   return (
     <div
-      className="relative scale-[65%] md:scale-100 flex items-center justify-center "
+      className="relative scale-[65%] md:scale-100 flex items-center justify-center  "
       style={{ width: svgSize, height: svgSize }}
     >
       <svg height={svgSize} width={svgSize}>
@@ -57,7 +57,7 @@ function CircularProgress({
       </svg>
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
         <span className="text-gray-500 text-xs mb-1">{label}</span>
-        <span className="text-gray-900 text-2xl sm:text-3xl font-bold">
+        <span className="text-gray-900  sm:text-3xl font-bold">
           {sublabel}
         </span>
       </div>
@@ -67,7 +67,7 @@ function CircularProgress({
 
 export default function Prog() {
   return (
-    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6">
+    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6 ">
       <div className="flex flex-row md:w-[60%] items-center md:justify-between">
         <CircularProgress
           value={130}

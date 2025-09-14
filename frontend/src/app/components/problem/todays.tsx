@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Todays() {
   return (
-    <div className="flex flex-col   p-3 bg-white border-4 border-[#EBEBF3] rounded-3xl mt-10 ">
+    <div className="flex flex-col   p-3 bg-white border-4 border-[#EBEBF3] rounded-3xl mt-5 ">
       <div className="flex flex-col">
         <span className="text-black text-xl md:text-xl font-bold">
           Today’s question
@@ -18,8 +18,8 @@ export default function Todays() {
             </span>
           </div>
         </div>
-        <div className="flex justify-end">
-          <button className="bg-[#6266F0] hover:bg-[#555aec] text-white font-semibold text-sm rounded-full w-fit px-2 py-1  shadow transition mt-4 ">
+        <div className="flex justify-center">
+          <button className="bg-[#6266F0] hover:bg-[#555aec] text-white  text-sm rounded-full w-fit px-4 py-1  shadow transition mt-4 ">
             start solving
           </button>
         </div>
