@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 const createProblem = AsyncHandler(async (req, res) => {
   const { title, description, difficulty, tags, testcases, inputFormat, outputFormat } = req.body;
 
-  // Check if user is admin
+
   const user = await User.findById(req.user._id);
   if (!user || user.position !== "admin") {
     throw new ApiError(403, "Only admin can create problems");
@@ -101,7 +101,6 @@ const getAllProblems = AsyncHandler(async (req, res) => {
 }
 );
 
-// New endpoint: GET /admin/my-problems
 const getAdminProblems = AsyncHandler(async(req,res)=>{
   const { page = 1, limit = 10, difficulty, tags } = req.query;
   
