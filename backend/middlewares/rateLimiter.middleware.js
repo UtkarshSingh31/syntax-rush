@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit';
-// OTP request rate limiting (per email)
+
 const otpRequestLimit = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
   max: 3, // 3 OTP requests per email per hour
