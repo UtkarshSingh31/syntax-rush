@@ -19,7 +19,6 @@ export default function Problem() {
   return (
     <div className="min-h-screen pb-10  ">
       <NavBar />
-    
 
       <div className="hidden lg:grid grid-cols-5 grid-rows-3  gap-4 scale-y-[96%] origin-top ">
         <div className="row-span-1 col-start-5 row-start-1 mr-5">
@@ -30,22 +29,20 @@ export default function Problem() {
         </div>
 
         <div
-  className={` row-start-1 col-span-3 transition-all duration-700 ease-in-out ${
-    showChat ? "ml-0" : "-ml-72"
-  }`}
+          className={` row-start-1 col-span-3 transition-all duration-700 ease-in-out ${
+            showChat ? "ml-0" : "-ml-72"
+          }`}
         >
           <Prog />
         </div>
 
-   
         <div
-  className={`row-span-4 row-start-2 col-span-3 transition-all duration-700 ease-in-out ${
-    showChat ? "ml-0" : "-ml-72"
-  }`}
->
-  <Ques />
-</div>
-
+          className={`row-span-4 row-start-2 col-span-3 transition-all duration-700 ease-in-out relative ${
+            showChat ? " ml-0" : "lg:-ml-72 "
+          }`}
+        >
+          <Ques />
+        </div>
 
         <div
           className={`row-span-2 col-start-1 row-start-1  bg-gray-100  relative transform transition-transform duration-700 ease-in-out  ${

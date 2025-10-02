@@ -79,7 +79,8 @@ export default function NavBar() {
         <img
           src="/profile.png"
           alt="Profile"
-          className="h-12 w-12 rounded-full bg-gray-300 object-cover"
+          className="h-12 w-12 rounded-full bg-gray-300 object-cover cursor-pointer"
+          onClick={() => (window.location.href = "/profile")}
         />
       </div>
 
