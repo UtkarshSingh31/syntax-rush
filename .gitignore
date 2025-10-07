@@ -4,7 +4,7 @@ node_modules/
 # additonal files
 next.txt
 steps.txt
-
+ML/models/
 
 # Logs
 logs/
