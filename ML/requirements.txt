@@ -5,8 +5,11 @@ scikit-learn
 transformers
 torch
 torchvision
-tensorflow
-keras
-Fastapi
+fastapi
+uvicorn
 requests
 pymongo
+sqlalchemy
+python-dotenv
+dataclasses-json
+pytest
