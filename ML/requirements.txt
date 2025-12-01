@@ -13,3 +13,5 @@ sqlalchemy
 python-dotenv
 dataclasses-json
 pytest
+pydantic[standard]
+uvicorn[standard]

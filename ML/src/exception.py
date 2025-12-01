@@ -1,31 +1,43 @@
 import sys
-import logging
+import traceback
+from typing import Optional
 from src.logger import logging
 
-def error_message_detail(error,error_detail:sys):
-    _,_,exc_tb=error_detail.exc_info()
-    file_name=exc_tb.tb_frame.f_code.co_filename
-    error_message="Error occured in python script name[{0}] line number [{1}] error message[{2}]".format(
-        file_name,exc_tb.tb_lineno,str(error)
+
+def format_error_message(error: BaseException) -> str:
+    exc_type, exc_value, exc_tb = sys.exc_info()
+
+    if exc_tb is None:
+        # No active traceback; just return the stringified error
+        return str(error)
+
+    file_name = exc_tb.tb_frame.f_code.co_filename
+    line_no = exc_tb.tb_lineno
+
+    return "Error in [{0}] line [{1}]: {2}".format(
+        file_name,
+        line_no,
+        str(error),
     )
 
-    return error_message
-
-
 class CustomException(Exception):
-    def __init__(self, error_message,error_details:sys):
-        super().__init__(error_message)
-        self.error_message=error_message_detail(
-            error_message,
-            error_details
-        )
+    """
+    Custom exception that captures a formatted error message and
+    optionally stores the original exception and traceback.
+    """
+    def __init__(self, error: BaseException | str, original_exception: Optional[BaseException] = None):
+        # If a string is passed, use it directly; if an exception is passed, format it
+        if isinstance(error, BaseException):
+            message = format_error_message(error)
+            orig = error
+        else:
+            message = str(error)
+            orig = original_exception
 
-    def __str__(self):
+        super().__init__(message)
+        self.error_message = message
+        self.original_exception = orig
+        self.traceback = traceback.format_exc()
+
+    def __str__(self) -> str:
         return self.error_message
-    
-if __name__=="__main__":
-    try:
-        a=1/0
-    except Exception as e:
-        logging.info("Divide by zero")
-        raise CustomException(e,sys)
