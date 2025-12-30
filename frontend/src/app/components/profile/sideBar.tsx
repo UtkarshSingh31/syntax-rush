@@ -8,10 +8,8 @@ interface SideBarProps {
 }
 
 export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
-
   return (
-    <div className="bg-[#1F2937] flex flex-col items-center justify-center pt-20 pl-10 text-center h-full w-full  ">
-     
+    <div className="bg-[#F0F1F6] flex flex-col items-center justify-center pt-10 pl-10 text-center h-full w-full  ">
       <div
         className="fixed top-4 left-4 text-white cursor-pointer "
         onClick={() => (window.location.href = "/problem")}
@@ -22,14 +20,14 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
         <img
           src="/profile.png"
           alt="Profile"
-          className="w-20 h-20 rounded-full object-cover border-4 border-gray-700"
+          className="w-20 h-20 rounded-full object-cover border- border-gray-700"
         />
         <div className="flex items-center justify-center mt-4">
-          <span className="text-white text-lg pl-2 text-center font-semibold">
+          <span className="text-[#232B36] text-lg pl-2 text-center font-semibold">
             Your Name
           </span>
-          <button className="ml-2 p-1 rounded-full hover:bg-gray-700 transition">
-            <FiEdit2 className="text-gray-300" size={16} />
+          <button className="ml-2 p-1 rounded-full hover:bg-gray-200 transition">
+            <FiEdit2 className="text-[#232B36]" size={16} />
           </button>
         </div>
       </div>
@@ -40,7 +38,7 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
             ${
               activeTab === "profile"
                 ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none "
-                : "text-gray-200 hover:text-white"
+                : "text-gray-500 hover:text-gray-700"
             }
           `}
           onClick={() => setActiveTab("profile")}
@@ -53,7 +51,7 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
             ${
               activeTab === "leaderboard"
                 ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none"
-                : "text-gray-200 hover:text-white"
+                : "text-gray-500 hover:text-gray-700"
             }
           `}
           onClick={() => setActiveTab("leaderboard")}
@@ -66,7 +64,7 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
             ${
               activeTab === "group"
                 ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none"
-                : "text-gray-200 hover:text-white"
+                : "text-gray-500 hover:text-gray-700"
             }
           `}
           onClick={() => setActiveTab("group")}
@@ -79,7 +77,7 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
             ${
               activeTab === "friends"
                 ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  transition-all  transform rounded-r-none"
-                : "text-gray-200 hover:text-white"
+                : "text-gray-500 hover:text-gray-700"
             }
           `}
           onClick={() => setActiveTab("friends")}
@@ -89,7 +87,7 @@ export default function SideBar({ activeTab, setActiveTab }: SideBarProps) {
         </button>
       </div>
 
-      <div className="mt-auto w-full px-6 mb-4">
+      <div className="mt-auto mb-20 w-full px-6 mb-2#232b360">
         <button className="flex items-start text-start gap-2 text-gray-500 hover:text-red-600  w-full">
           <FiLogOut size={20} />
           <span className="text-base">Log Out</span>

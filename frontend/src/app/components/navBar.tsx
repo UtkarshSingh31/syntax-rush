@@ -15,7 +15,7 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between px-6 py-7 bg-[#F0F1F6] h-[8vh] ">
+    <nav className="flex items-center justify-between px-6 py-7 bg-[#F0F1F6] h-[8vh] z-50 ">
       <div className="flex items-center gap-2">
         <svg
           width="40"
@@ -74,7 +74,6 @@ export default function NavBar() {
         </div>
       </div>
 
-      {/* Profile */}
       <div className="hidden md:block">
         <img
           src="/profile.png"
@@ -84,7 +83,6 @@ export default function NavBar() {
         />
       </div>
 
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden p-2 rounded-lg hover:bg-gray-200"
@@ -92,7 +90,6 @@ export default function NavBar() {
         {isOpen ? <X size={26} /> : <Menu size={26} />}
       </button>
 
-      {/* Mobile Dropdown */}
       {isOpen && (
         <div className="absolute top-[8vh] left-0 w-full bg-white shadow-lg border-t border-gray-300 flex flex-col items-center py-4 gap-4 md:hidden z-50">
           {navLinks.map((link) => (

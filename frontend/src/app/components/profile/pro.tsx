@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 
-const soloPreview = [
-  { name: "player-1", score: 980 },
-  { name: "player-2", score: 920 },
-  { name: "player-3", score: 860 },
-  { name: "player-4", score: 820 },
-  { name: "player-5", score: 780 },
-];
+// const soloPreview = [
+//   { name: "player-1", score: 980 },
+//   { name: "player-2", score: 920 },
+//   { name: "player-3", score: 860 },
+//   { name: "player-4", score: 820 },
+//   { name: "player-5", score: 780 },
+// ];
 
-const groupPreview = [
-  { team: "Alpha Coders", score: 2150 },
-  { team: "Bug Smashers", score: 1990 },
-  { team: "Runtime Terrors", score: 1880 },
-  { team: "Null Pointers", score: 1760 },
-];
+// const groupPreview = [
+//   { team: "Alpha Coders", score: 2150 },
+//   { team: "Bug Smashers", score: 1990 },
+//   { team: "Runtime Terrors", score: 1880 },
+//   { team: "Null Pointers", score: 1760 },
+// ];
 
 export default function pro() {
   const [about, setAbout] = useState(
@@ -24,9 +24,12 @@ export default function pro() {
   return (
     <div>
       <div className="grid grid-cols-4 grid-rows-9 gap-4 min-h-[150vh] m-10 ml-10 ">
-      
-        <div className="col-span-2 row-span-3 h-full w-full rounded-xl bg-[#232b36] text-white p-6 flex gap-6">
-          <img src="/profile.png" alt="profile" className="w-28 h-28 rounded-full object-cover" />
+        <div className="col-span-2 row-span-3 h-full w-full rounded-xl bg-[#6266F0] text-white p-6 flex gap-6">
+          <img
+            src="/profile.png"
+            alt="profile"
+            className="w-28 h-28 rounded-full object-cover"
+          />
           <div className="flex flex-col justify-between">
             <div>
               <h2 className="text-xl font-semibold">Player Name</h2>
@@ -48,13 +51,17 @@ export default function pro() {
             </div>
             <div className="mt-4 flex gap-2 flex-wrap">
               {["JavaScript", "TypeScript", "C++", "Python"].map((t) => (
-                <span key={t} className="text-xs px-3 py-1 rounded-full bg-white/10">{t}</span>
+                <span
+                  key={t}
+                  className="text-xs px-3 py-1 rounded-full bg-white/10"
+                >
+                  {t}
+                </span>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Account overview */}
         <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-3 p-6">
           <h3 className="text-gray-800 font-semibold mb-4">Account Overview</h3>
           <div className="grid grid-cols-3 gap-4">
@@ -73,25 +80,45 @@ export default function pro() {
           </div>
         </div>
 
-        {/* Skills / Languages */}
         <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-1 row-start-6 p-6">
           <h3 className="text-gray-800 font-semibold mb-4">Skills</h3>
           <div className="flex flex-wrap gap-2">
-            {["Arrays", "Graphs", "DP", "Greedy", "Backtracking", "Strings", "Math"].map((s) => (
-              <span key={s} className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">{s}</span>
+            {[
+              "Arrays",
+              "Graphs",
+              "DP",
+              "Greedy",
+              "Backtracking",
+              "Strings",
+              "Math",
+            ].map((s) => (
+              <span
+                key={s}
+                className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700"
+              >
+                {s}
+              </span>
             ))}
           </div>
         </div>
 
-        {/* Progress & Streak */}
         <div className="row-span-4 h-full w-full bg-white rounded-xl shadow col-start-3 row-start-5 p-6">
-          <h3 className="text-gray-800 font-semibold mb-2">Progress & Streak</h3>
-          <p className="text-xs text-gray-500 mb-6">Your last 7 days of activity</p>
+          <h3 className="text-gray-800 font-semibold mb-2">
+            Progress & Streak
+          </h3>
+          <p className="text-xs text-gray-500 mb-6">
+            Your last 7 days of activity
+          </p>
           <div className="flex items-end gap-3 h-40">
             {[35, 60, 80, 45, 90, 70, 95].map((h, i) => (
               <div key={i} className="flex flex-col items-center gap-2">
-                <div className="w-8 rounded-md bg-gradient-to-t from-[#232b36] to-gray-400" style={{ height: `${h}%` }} />
-                <span className="text-[10px] text-gray-500">{["M","T","W","T","F","S","S"][i]}</span>
+                <div
+                  className="w-8 rounded-md bg-gradient-to-t from-[#232b36] to-gray-400"
+                  style={{ height: `${h}%` }}
+                />
+                <span className="text-[10px] text-gray-500">
+                  {["M", "T", "W", "T", "F", "S", "S"][i]}
+                </span>
               </div>
             ))}
           </div>
@@ -113,11 +140,25 @@ export default function pro() {
 
         {/* Badges & Trophies */}
         <div className="row-span-4 h-full w-full bg-white rounded-xl shadow col-start-4 row-start-5 p-6">
-          <h3 className="text-gray-800 font-semibold mb-2">Badges & Trophies</h3>
-          <p className="text-xs text-gray-500 mb-4">Keep collecting to level up your profile</p>
+          <h3 className="text-gray-800 font-semibold mb-2">
+            Badges & Trophies
+          </h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Keep collecting to level up your profile
+          </p>
           <div className="grid grid-cols-2 gap-3">
-            {["🏆 Champion", "⚡ Speedster", "🧠 Strategist", "🎯 Accuracy", "🔥 Streaker", "🤝 Team Player"].map((b, i) => (
-              <div key={i} className="rounded-xl p-4 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-sm text-gray-800">
+            {[
+              "🏆 Champion",
+              "⚡ Speedster",
+              "🧠 Strategist",
+              "🎯 Accuracy",
+              "🔥 Streaker",
+              "🤝 Team Player",
+            ].map((b, i) => (
+              <div
+                key={i}
+                className="rounded-xl p-4 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-sm text-gray-800"
+              >
                 {b}
               </div>
             ))}
@@ -128,8 +169,18 @@ export default function pro() {
         <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-1 row-start-8 p-6">
           <h3 className="text-gray-800 font-semibold mb-4">Achievements</h3>
           <div className="flex gap-3 flex-wrap">
-            {["100 Wins", "Weekly Streak 7", "Fast Typer", "Problem Solver"].map((a, i) => (
-              <div key={i} className="px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700">{a}</div>
+            {[
+              "100 Wins",
+              "Weekly Streak 7",
+              "Fast Typer",
+              "Problem Solver",
+            ].map((a, i) => (
+              <div
+                key={i}
+                className="px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700"
+              >
+                {a}
+              </div>
             ))}
           </div>
         </div>
@@ -161,7 +212,9 @@ export default function pro() {
             )}
           </div>
           {!isEditingAbout && (
-            <p className="text-sm text-gray-700 overflow-y-auto  leading-6">{about}</p>
+            <p className="text-sm text-gray-700 overflow-y-auto  leading-6">
+              {about}
+            </p>
           )}
           {isEditingAbout && (
             <div className="space-y-3">

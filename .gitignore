@@ -4,7 +4,11 @@ node_modules/
 # additonal files
 next.txt
 steps.txt
-ML/models/
+ML/models/gpt2/*.bin
+ML/models/gpt2/*.safetensors
+ML/models/*.safetensors
+!ML/models/gpt2/.gitkeep
+
 
 # Logs
 logs/

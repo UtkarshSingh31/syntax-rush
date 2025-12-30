@@ -146,7 +146,7 @@ export default function Vs() {
 
             <div className="rounded-3xl bg-white shadow-xl p-6 w-full border border-gray-100">
               {/* Top metrics like problem page */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="rounded-xl border bg-white p-4 flex items-center justify-center">
                   <div className="relative w-36 h-36">
                     <div className="absolute inset-0 rounded-full" style={{background: `conic-gradient(#6366f1 ${95*3.6}deg, #e5e7eb 0deg)`}} />
@@ -169,20 +169,7 @@ export default function Vs() {
                     </div>
                   </div>
                 </div>
-                <div className="rounded-xl border bg-white p-4 flex flex-col justify-center text-center">
-                  <div className="text-2xl font-semibold text-gray-900">3h <span className="text-indigo-500">40min</span></div>
-                  <div className="text-xs text-gray-500">this week</div>
-                  <div className="mt-3 text-xl font-semibold text-gray-900">6d 9h <span className="text-indigo-500">25min</span></div>
-                  <div className="text-xs text-gray-500">this month</div>
-                </div>
-              </div>
-
-              {/* Search */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 rounded-full border px-4 py-2 bg-white">
-                  <span className="text-gray-400">🔎</span>
-                  <input className="flex-1 outline-none text-sm" placeholder="Search modes or opponents" />
-                </div>
+ 
               </div>
 
               {/* List of modes like problem list */}
@@ -191,8 +178,7 @@ export default function Vs() {
                   { title: "Quick match", win: 63.2, tag: "Easy", type: "quick" },
                   { title: "1v1 Classic", win: 69.2, tag: "Hard", type: "1v1 classic" },
                   { title: "Friendly", win: 53.2, tag: "Medium", type: "friendly" },
-                  { title: "Timed Blitz", win: 61.0, tag: "Easy", type: "quick" },
-                  { title: "Algorithm Duel", win: 58.4, tag: "Medium", type: "1v1 classic" },
+
                 ].map((row, i) => (
                   <li key={i} className="flex items-center justify-between rounded-xl border bg-white p-3">
                     <div className="flex items-center gap-3">

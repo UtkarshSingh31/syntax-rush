@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import Link from "next/link";
 const questions = [
   { id: 1, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
   { id: 2, title: "Three sum", percent: 69.2, difficulty: "hard" },
@@ -12,26 +12,26 @@ const questions = [
   { id: 8, title: "Binary search", percent: 71.5, difficulty: "medium" },
   { id: 9, title: "Two sum", percent: 81.2, difficulty: "easy" },
   { id: 10, title: "LRU Cache", percent: 42.3, difficulty: "hard" },
-  { id: 1, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 2, title: "Three sum", percent: 69.2, difficulty: "hard" },
-  { id: 3, title: "ZigZag conversion", percent: 53.2, difficulty: "medium" },
-  { id: 4, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 5, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 6, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 7, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 8, title: "Binary search", percent: 71.5, difficulty: "medium" },
-  { id: 9, title: "Two sum", percent: 81.2, difficulty: "easy" },
-  { id: 10, title: "LRU Cache", percent: 42.3, difficulty: "hard" },
-  { id: 1, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 2, title: "Three sum", percent: 69.2, difficulty: "hard" },
-  { id: 3, title: "ZigZag conversion", percent: 53.2, difficulty: "medium" },
-  { id: 4, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 5, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 6, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 7, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
-  { id: 8, title: "Binary search", percent: 71.5, difficulty: "medium" },
-  { id: 9, title: "Two sum", percent: 81.2, difficulty: "easy" },
-  { id: 10, title: "LRU Cache", percent: 42.3, difficulty: "hard" },
+  { id: 11, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 12, title: "Three sum", percent: 69.2, difficulty: "hard" },
+  { id: 13, title: "ZigZag conversion", percent: 53.2, difficulty: "medium" },
+  { id: 14, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 15, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 16, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 17, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 18, title: "Binary search", percent: 71.5, difficulty: "medium" },
+  { id: 19, title: "Two sum", percent: 81.2, difficulty: "easy" },
+  { id: 20, title: "LRU Cache", percent: 42.3, difficulty: "hard" },
+  { id: 21, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 22, title: "Three sum", percent: 69.2, difficulty: "hard" },
+  { id: 23, title: "ZigZag conversion", percent: 53.2, difficulty: "medium" },
+  { id: 24, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 25, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 26, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 27, title: "Add two numbers", percent: 63.2, difficulty: "easy" },
+  { id: 28, title: "Binary search", percent: 71.5, difficulty: "medium" },
+  { id: 29, title: "Two sum", percent: 81.2, difficulty: "easy" },
+  { id: 30, title: "LRU Cache", percent: 42.3, difficulty: "hard" },
 ];
 
 const difficultyColor = {
@@ -94,10 +94,12 @@ export default function Ques() {
       {/* Questions list */}
       <div className="flex flex-col gap-3 rounded-2xl overflow-y-auto h-[70vh] sm:h-[80vh]">
         {questions.map((q, idx) => (
+          <Link href={`/problem/${q.id}`} key={q.id}>
+
           <div
             key={q.id + idx}
             className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-white px-4 sm:px-6 py-3 rounded-2xl shadow-sm"
-          >
+            >
             <div className="flex-1 text-gray-800 font-medium text-sm sm:text-base">
               {idx + 1}. {q.title}
             </div>
@@ -107,11 +109,12 @@ export default function Ques() {
                 className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold capitalize ${
                   difficultyColor[q.difficulty as keyof typeof difficultyColor]
                 }`}
-              >
+                >
                 {q.difficulty}
               </div>
             </div>
           </div>
+                </Link>
         ))}
       </div>
     </div>
