@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import api from "@/lib/api";
+import { socket } from "@/socket";
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,13 +15,29 @@ import {
 
 export default function ProblemStPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const battleId = searchParams.get("battleId");
+
   const [problem, setProblem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   const languages = ["javascript", "python", "java", "cpp"];
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        setUser(res.data.data.user);
+      } catch (err) {
+        console.error("Auth failed", err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -38,16 +55,31 @@ export default function ProblemStPage() {
     if (id) fetchProblem();
   }, [id]);
 
+  useEffect(() => {
+    if (battleId && user) {
+      socket.connect();
+      socket.emit("join_battle", { battleId, user });
+    }
+  }, [battleId, user]);
+
   const handleSubmit = async () => {
     if (!code) return;
     setSubmitting(true);
     try {
-      const response = await api.post("/submissions/submit", {
+      const endpoint = battleId ? `/battles/${battleId}/submit` : "/submissions/submit";
+      const response = await api.post(endpoint, {
         problemId: id,
         code,
         language: selectedLanguage
       });
-      alert(`Submission Status: ${response.data.data.submission.status}`);
+
+      const submission = response.data.data.submission;
+      alert(`Submission Status: ${submission.status}`);
+
+      if (battleId && submission.status === "accepted") {
+        socket.emit("update_progress", { battleId, userId: user._id, progress: 100 });
+        socket.emit("battle_submission", { battleId, userId: user._id, submission });
+      }
     } catch (error: any) {
       alert(`Error: ${error.response?.data?.message || "Something went wrong"}`);
     } finally {

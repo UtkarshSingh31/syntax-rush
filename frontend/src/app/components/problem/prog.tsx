@@ -65,23 +65,82 @@ function CircularProgress({
   );
 }
 
-export default function Prog() {
+import { useEffect, useState } from "react";
+import { socket } from "@/socket";
+import api from "@/lib/api";
+
+export default function Prog({ battleId }: { battleId?: string | null }) {
+  const [opponentProgress, setOpponentProgress] = useState(0);
+  const [myProgress, setMyProgress] = useState(0);
+  const [user, setUser] = useState<any>(null);
+  const [opponent, setOpponent] = useState<any>(null); // Added opponent state
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        setUser(res.data.data);
+      } catch (err) {
+        console.error("Auth failed", err);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (battleId && user) {
+      socket.connect();
+      socket.emit("join_battle", { battleId, user });
+
+      socket.on("opponent_progress", ({ userId, progress }: { userId: string; progress: number }) => {
+        if (userId !== user._id) {
+          setOpponentProgress(progress);
+        }
+      });
+
+      socket.on("room_state", (state: { players: { userId: string; progress: number }[] }) => {
+        const otherPlayer = state.players.find((p: { userId: string }) => p.userId !== user._id);
+        if (otherPlayer) {
+          setOpponent(otherPlayer);
+          setOpponentProgress(otherPlayer.progress); // Assuming setProgress refers to opponent's progress
+        }
+      });
+
+      return () => {
+        socket.off("opponent_progress");
+        socket.off("room_state"); // Cleanup room_state listener
+        socket.disconnect();
+      };
+    }
+  }, [battleId, user]);
+
   return (
-    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6 ">
-      <div className="flex flex-row md:w-[60%] items-center md:justify-between">
+    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6 transition-all">
+      <div className="flex flex-row md:w-[70%] items-center md:justify-between w-full">
         <CircularProgress
-          value={130}
-          max={250}
-          label="Total questions"
-          sublabel="130/250"
+          value={myProgress}
+          max={100}
+          label="Your Progress"
+          sublabel={`${myProgress}%`}
         />
 
-        <CircularProgress
-          value={95}
-          max={100}
-          label="Accuracy Rate"
-          sublabel="95%"
-        />
+        {battleId && (
+          <CircularProgress
+            value={opponentProgress}
+            max={100}
+            label="Opponent Progress"
+            sublabel={`${opponentProgress}%`}
+          />
+        )}
+
+        {!battleId && (
+          <CircularProgress
+            value={user?.performanceStats?.battleWon || 0}
+            max={100}
+            label="Accuracy Rate"
+            sublabel={`${user?.performanceStats?.totalPoints || 0} PTS`}
+          />
+        )}
       </div>
 
       <div className="flex scale-90 md:scale-100 flex-col mt-6 text-center items-center">

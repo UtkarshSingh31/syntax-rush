@@ -13,23 +13,25 @@ export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/auth/profile");
+      setUser(res.data.data.user);
+    } catch (err) {
+      console.error("Failed to fetch user profile:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get("/auth/profile");
-        setUser(res.data.data.user);
-      } catch (err) {
-        console.error("Failed to fetch user profile:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUser();
   }, []);
 
   const renderContent = () => {
-    if (loading) return <div className="p-10 text-gray-500">Loading profile...</div>;
-    if (!user) return <div className="p-10 text-red-500">User not found. Please log in again.</div>;
+    if (loading) return <div className="p-10 text-center text-gray-500">Loading profile...</div>;
+    if (!user) return <div className="p-10 text-center text-red-500">Please login to view profile.</div>;
 
     switch (activeTab) {
       case "profile":
@@ -41,20 +43,21 @@ export default function ProfilePage() {
       case "friends":
         return <Friends />;
       default:
-        return <Friends />;
+        return <Pro user={user} onUserUpdate={(updatedUser: any) => setUser(updatedUser)} />;
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#F7F8FD]">
       <NavBar />
-      <div className="min-h-screen bg-[#F7F8FD]">
+      <div className="flex pt-20">
         {/* Sidebar */}
-        <div className="absolute left-0 top-16 w-64 h-full z-10">
+        <div className="w-64 fixed left-0 top-0 h-screen border-r bg-[#F0F1F6] z-10">
           <SideBar activeTab={activeTab} setActiveTab={setActiveTab} user={user} />
         </div>
+
         {/* Main Content */}
-        <div className="ml-64 min-h-screen overflow-y-auto h-screen">
+        <div className="ml-64 flex-1">
           {renderContent()}
         </div>
       </div>

@@ -8,86 +8,109 @@ interface SideBarProps {
   user: any;
 }
 
+import api from "@/lib/api";
+import { useRouter } from "next/navigation";
+
 export default function SideBar({ activeTab, setActiveTab, user }: SideBarProps) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
   return (
-    <div className="bg-[#F0F1F6] flex flex-col items-center justify-center pt-10 pl-10 text-center h-full w-full  ">
+    <div className="bg-[#F0F1F6] flex flex-col pt-20 pb-10 px-8 h-full w-full border-r border-gray-100">
       <div
-        className="fixed top-4 left-4 text-white cursor-pointer "
+        className="fixed top-24 left-6 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors z-50"
         onClick={() => (window.location.href = "/problem")}
       >
-        <h1>X</h1>
-      </div>
-      <div className="flex flex-col items-center pr-10">
-        <img
-          src={user?.profilePicture || "/profile.png"}
-          alt="Profile"
-          className="w-20 h-20 rounded-full object-cover border- border-gray-700"
-        />
-        <div className="flex items-center justify-center mt-4">
-          <span className="text-[#232B36] text-lg pl-2 text-center font-semibold">
-            {user?.fullname || "User"}
-          </span>
-          <button className="ml-2 p-1 rounded-full hover:bg-gray-200 transition">
-            <FiEdit2 className="text-[#232B36]" size={16} />
-          </button>
+        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm border border-gray-100 font-bold text-sm">
+          ✕
         </div>
       </div>
 
-      <div className="flex flex-col gap-10 mt-16 w-full ">
+      <div className="flex flex-col items-center mb-12">
+        <div className="relative group">
+          <div className="w-24 h-24 rounded-full p-1 bg-white shadow-md border border-gray-100">
+            <img
+              src={user?.profilePicture || "/profile.png"}
+              alt="Profile"
+              className="w-full h-full rounded-full object-cover"
+            />
+          </div>
+
+        </div>
+        <div className="mt-4 text-center">
+          <h2 className="text-[#232B36] text-xl font-bold tracking-tight">
+            {user?.fullname || "User"}
+          </h2>
+          <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">@{user?.username || "username"}</p>
+        </div>
+      </div>
+
+      <nav className="flex flex-col gap-2 w-full">
         <button
-          className={`flex items-center gap-3 text-base transition px-1 py-4 
+          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
             ${activeTab === "profile"
-              ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none "
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
+              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
             }
           `}
           onClick={() => setActiveTab("profile")}
         >
-          <FiUser size={20} />
-          <span className="text-base">Profile</span>
+          <FiUser size={18} />
+          <span>Profile</span>
         </button>
         <button
-          className={`flex items-center gap-3 text-base transition px-1 py-4
+          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
             ${activeTab === "leaderboard"
-              ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
+              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
             }
           `}
           onClick={() => setActiveTab("leaderboard")}
         >
-          <FiAward size={20} />
-          <span className="text-base">Leaderboard</span>
+          <FiAward size={18} />
+          <span>Leaderboard</span>
         </button>
         <button
-          className={`flex items-center gap-3 text-base transition px-1 py-4
+          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
             ${activeTab === "group"
-              ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  rounded-r-none"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
+              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
             }
           `}
           onClick={() => setActiveTab("group")}
         >
-          <FiUsers size={20} />
-          <span className="text-base">Group</span>
+          <FiUsers size={18} />
+          <span>Group</span>
         </button>
         <button
-          className={`flex items-center gap-3 text-base transition px-1 py-4
+          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
             ${activeTab === "friends"
-              ? "bg-[#F7F8FD] text-[#1F2937] rounded-l-lg  transition-all  transform rounded-r-none"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
+              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
             }
           `}
           onClick={() => setActiveTab("friends")}
         >
-          <FiUsers size={20} />
-          <span className="text-base">Friends</span>
+          <FiUsers size={18} />
+          <span>Friends</span>
         </button>
-      </div>
+      </nav>
 
-      <div className="mt-auto mb-20 w-full px-6 mb-2#232b360">
-        <button className="flex items-start text-start gap-2 text-gray-500 hover:text-red-600  w-full">
-          <FiLogOut size={20} />
-          <span className="text-base">Log Out</span>
+      <div className="mt-auto pt-10 border-t border-gray-200/50">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-4 px-6 py-4 text-sm font-bold text-gray-400 hover:text-red-500 hover:bg-red-50/50 rounded-2xl transition-all w-full"
+        >
+          <FiLogOut size={18} />
+          <span>Log Out</span>
         </button>
       </div>
     </div>

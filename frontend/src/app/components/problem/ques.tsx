@@ -9,7 +9,7 @@ const difficultyColor = {
   Hard: "text-red-600 bg-red-100",
 };
 
-export default function Ques() {
+export default function Ques({ battleId }: { battleId?: string | null }) {
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +84,7 @@ export default function Ques() {
           <div className="text-center py-10 text-gray-500">No questions found.</div>
         ) : (
           questions.map((q, idx) => (
-            <Link href={`/problem/${q._id}`} key={q._id}>
+            <Link href={`/problem/${q._id}${battleId ? `?battleId=${battleId}` : ''}`} key={q._id}>
               <div
                 className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-white px-4 sm:px-6 py-3 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
               >

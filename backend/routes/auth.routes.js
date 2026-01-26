@@ -1,5 +1,6 @@
 import express from "express";
 import { Register, login, refreshAccessToken, Logout, sendEmailVerificationOTP, verifyEmailOTP, userProfile, createAdmin, adminProfile, forgotPasswordOTP, resetPassword, updateProfile, getLeaderboard } from "../controllers/user.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import rateLimiter from "../middlewares/rateLimiter.middleware.js";
 
@@ -14,7 +15,7 @@ router.route("/refresh-token").post(refreshAccessToken);
 router.route("/login").post(login);
 router.route("/logout").post(verifyJWT, Logout);
 router.route("/profile").get(verifyJWT, userProfile);
-router.route("/update-profile").patch(verifyJWT, updateProfile);
+router.route("/update-profile").patch(verifyJWT, upload.single("profilePicture"), updateProfile);
 router.route("/leaderboard").get(getLeaderboard);
 router.route("/create-admin").post(createAdmin);
 router.route("/admin-profile").get(verifyJWT, adminProfile);

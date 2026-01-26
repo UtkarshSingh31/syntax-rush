@@ -7,6 +7,10 @@ const createGroup = AsyncHandler(async (req, res) => {
   const { name, username, description, isPublic, maxMembers } = req.body;
   if (!name) throw new ApiError(400, "Group name is required");
 
+  // Check if user is already in a group
+  const existingMembership = await Group.findOne({ "members.userId": req.user._id });
+  if (existingMembership) throw new ApiError(400, "You are already a member of a group. Leave it to create a new one.");
+
   try {
     const group = await Group.create({
       name,
@@ -40,6 +44,9 @@ const joinGroup = AsyncHandler(async (req, res) => {
 
   if (!group) throw new ApiError(404, "Group not found");
 
+  const isMemberOfAny = await Group.findOne({ "members.userId": req.user._id });
+  if (isMemberOfAny) throw new ApiError(400, "You are already a member of a group. Leave it to join another.");
+
   const isMember = group.members.some(m => String(m.userId) === String(req.user._id));
   if (isMember) throw new ApiError(400, "Already a member");
 
@@ -66,7 +73,11 @@ const getJoinRequests = AsyncHandler(async (req, res) => {
   const group = await Group.findById(id).populate("joinRequests.userId", "username fullname profilePicture");
 
   if (!group) throw new ApiError(404, "Group not found");
-  if (String(group.owner) !== String(req.user._id)) throw new ApiError(403, "Only owner can see requests");
+
+  const isAdmin = group.members.some(m => String(m.userId) === String(req.user._id) && m.role === "admin");
+  const isOwner = String(group.owner) === String(req.user._id);
+
+  if (!isOwner && !isAdmin) throw new ApiError(403, "Only owner or admins can see requests");
 
   return res.status(200).json(new ApiResponse(200, { requests: group.joinRequests }, "Join requests fetched"));
 });
@@ -77,7 +88,11 @@ const handleJoinRequest = AsyncHandler(async (req, res) => {
 
   const group = await Group.findById(id);
   if (!group) throw new ApiError(404, "Group not found");
-  if (String(group.owner) !== String(req.user._id)) throw new ApiError(403, "Unauthorized");
+
+  const isAdmin = group.members.some(m => String(m.userId) === String(req.user._id) && m.role === "admin");
+  const isOwner = String(group.owner) === String(req.user._id);
+
+  if (!isOwner && !isAdmin) throw new ApiError(403, "Unauthorized: Only owner or admins can handle requests");
 
   const requestIndex = group.joinRequests.findIndex(r => String(r.userId) === String(userId));
   if (requestIndex === -1) throw new ApiError(404, "Request not found");

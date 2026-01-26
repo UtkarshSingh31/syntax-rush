@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { otp } from "../models/otp.model.js";
 import EmailService from "../utils/EmailService.js";
 import { Problem } from "../models/problem.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessandRefreshTokens = async (userId) => {
   try {
@@ -24,6 +25,7 @@ const generateAccessandRefreshTokens = async (userId) => {
     throw new ApiError(500, "Something went wrong while generating refresh and access token")
   }
 }
+
 
 const refreshAccessToken = AsyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
@@ -216,7 +218,8 @@ const Register = AsyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   };
 
   return res
@@ -253,7 +256,8 @@ const login = AsyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessandRefreshTokens(user._id);
   const options = {
     httpOnly: true,
-    secure: true
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   };
   if (user.position === "admin") {
     if (!user.isEmailVerified) {
@@ -318,7 +322,8 @@ const Logout = AsyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   };
 
 
@@ -375,7 +380,8 @@ const createAdmin = AsyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   };
 
   return res
@@ -398,12 +404,10 @@ const createAdmin = AsyncHandler(async (req, res) => {
 
 
 
-const userProfile = AsyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password -refreshToken");
-  if (!user) throw new ApiError(404, "User not found");
+const getUserWithCalculatedRank = async (userId) => {
+  const user = await User.findById(userId).select("-password -refreshToken");
+  if (!user) return null;
 
-  // Calculate Global Rank dynamically with tie-breaker
-  // Higher points win. If points are tied, the earlier account (createdAt) wins.
   const rank = await User.countDocuments({
     $or: [
       { "performanceStats.totalPoints": { $gt: user.performanceStats.totalPoints } },
@@ -414,9 +418,14 @@ const userProfile = AsyncHandler(async (req, res) => {
     ]
   }) + 1;
 
-  // Add rank to the user object (non-persisted for display)
   const userWithRank = user.toObject();
   userWithRank.performanceStats.currentGlobalRank = rank;
+  return userWithRank;
+};
+
+const userProfile = AsyncHandler(async (req, res) => {
+  const userWithRank = await getUserWithCalculatedRank(req.user._id);
+  if (!userWithRank) throw new ApiError(404, "User not found");
 
   return res.status(200).json(new ApiResponse(200, { user: userWithRank }, "User profile fetched"));
 });
@@ -480,7 +489,7 @@ const resetPassword = AsyncHandler(async (req, res) => {
 });
 
 const updateProfile = AsyncHandler(async (req, res) => {
-  const { fullname, college, country, about, skills } = req.body;
+  const { fullname, college, country, about, skills } = req.body || {};
 
   // Create an update object, only including fields if they are provided
   const updateFields = {};
@@ -490,13 +499,30 @@ const updateProfile = AsyncHandler(async (req, res) => {
   if (about !== undefined) updateFields.about = about;
   if (skills !== undefined) updateFields.skills = skills;
 
-  const user = await User.findByIdAndUpdate(
+  // Handle Profile Picture Upload
+  console.log("Request File:", req.file);
+  console.log("Request Body:", req.body);
+
+  if (req.file) {
+    const avatar = await uploadOnCloudinary(req.file.path);
+    if (avatar) {
+      updateFields.profilePicture = avatar.url;
+    }
+  } else if (req.body && req.body.profilePicture !== undefined) {
+    updateFields.profilePicture = req.body.profilePicture;
+  }
+
+  console.log("Update Fields:", updateFields);
+
+  await User.findByIdAndUpdate(
     req.user._id,
     { $set: updateFields },
     { new: true }
-  ).select("-password -refreshToken");
+  );
 
-  return res.status(200).json(new ApiResponse(200, { user }, "Profile updated"));
+  const userWithRank = await getUserWithCalculatedRank(req.user._id);
+
+  return res.status(200).json(new ApiResponse(200, { user: userWithRank }, "Profile updated"));
 });
 
 const getLeaderboard = AsyncHandler(async (req, res) => {

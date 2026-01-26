@@ -189,7 +189,9 @@ export default function Group() {
                           <p className="font-semibold text-sm">{g.name}</p>
                           <p className="text-xs text-gray-400">{g.members?.length} members</p>
                         </div>
-                        <button onClick={() => handleJoin(g._id)} className="text-xs font-bold text-indigo-600 px-3 py-1 bg-indigo-50 rounded-md hover:bg-indigo-100 transition-colors">Join</button>
+                        {groups.length === 0 && (
+                          <button onClick={() => handleJoin(g._id)} className="text-xs font-bold text-indigo-600 px-3 py-1 bg-indigo-50 rounded-md hover:bg-indigo-100 transition-colors">Join</button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -211,7 +213,9 @@ export default function Group() {
                       <h4 className="font-bold text-gray-800">{s.name}</h4>
                       <p className="text-xs text-gray-400">@{s.username || 'squad'} • {s.members?.length} Members</p>
                     </div>
-                    <button onClick={() => handleJoin(s._id)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase tracking-tighter hover:bg-indigo-100 transition-colors">Join</button>
+                    {groups.length === 0 && (
+                      <button onClick={() => handleJoin(s._id)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase tracking-tighter hover:bg-indigo-100 transition-colors">Join</button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -328,8 +332,8 @@ export default function Group() {
             <button onClick={handleLeave} className="p-5 bg-red-500/10 text-red-400 rounded-2xl hover:bg-red-500/20 transition-all border border-red-500/10" title="Leave Group">
               <LogOut size={28} />
             </button>
-            <button onClick={() => setShowCreate(true)} className="p-5 bg-white/10 rounded-2xl hover:bg-white/20 transition-all border border-white/5">
-              <Plus size={28} />
+            <button className="p-5 bg-white/10 rounded-2xl hover:bg-white/20 transition-all border border-white/5" title="Battle (Coming Soon)">
+              <Swords size={28} />
             </button>
           </div>
         </div>
@@ -405,26 +409,31 @@ export default function Group() {
 
         {/* Squad Selection */}
         <div className={`col-span-2 ${requests.length > 0 ? 'row-span-4' : 'row-span-7'} bg-white rounded-3xl shadow-sm p-8 border border-gray-100`}>
-          <h3 className="text-xl font-bold mb-6 text-gray-800">Your Squads</h3>
-          <div className="space-y-4">
-            {groups.map(g => (
-              <div
-                key={g._id}
-                onClick={() => setActiveGroup(g)}
-                className={`p-6 rounded-3xl cursor-pointer transition-all border ${activeGroup?._id === g._id ? 'bg-[#232b36] text-white border-transparent shadow-2xl scale-[1.02]' : 'bg-gray-50 text-gray-700 border-gray-100 hover:bg-white hover:shadow-md'}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-lg block mb-1">{g.name}</span>
-                    <span className={`text-xs ${activeGroup?._id === g._id ? 'text-white/50' : 'text-gray-400'} font-bold uppercase tracking-widest`}>{g.members?.length} Members</span>
-                  </div>
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${activeGroup?._id === g._id ? 'bg-white/10' : 'bg-white shadow-sm'}`}>
-                    <Users size={18} />
+          <h3 className="text-xl font-bold mb-6 text-gray-800 text-center">Your Active Squad</h3>
+          {groups.length > 0 ? (
+            <div className="space-y-4">
+              {groups.map(g => (
+                <div
+                  key={g._id}
+                  className={`p-6 rounded-3xl transition-all border bg-[#232b36] text-white border-transparent shadow-2xl scale-[1.02]`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-lg block mb-1">{g.name}</span>
+                      <span className={`text-xs text-white/50 font-bold uppercase tracking-widest`}>{g.members?.length} Members</span>
+                    </div>
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center bg-white/10`}>
+                      <Users size={18} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-gray-400 text-sm">Join a group from suggestions to see it here.</p>
+            </div>
+          )}
 
           {/* Suggestions in Sidebar if few groups */}
           {groups.length > 0 && suggestions.length > 0 && (

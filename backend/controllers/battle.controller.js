@@ -7,24 +7,29 @@ import { Submission } from "../models/submission.model.js";
 import { createSubmission as judgeCreate, waitForResult } from "../utils/judge0.js";
 
 const create1v1 = AsyncHandler(async (req, res) => {
-  const { opponentId, problemIds, durationMinutes = 20, battleType = "1v1_classic" } = req.body;
-  if (!opponentId) throw new ApiError(400, "opponentId is required");
-  if (!Array.isArray(problemIds) || problemIds.length === 0) throw new ApiError(400, "problemIds required");
+  try {
+    const { opponentId, problemIds, durationMinutes = 20, battleType = "1v1_classic" } = req.body;
+    if (!opponentId) throw new ApiError(400, "opponentId is required");
+    if (!Array.isArray(problemIds) || problemIds.length === 0) throw new ApiError(400, "problemIds required");
 
-  const now = new Date();
-  const end = new Date(now.getTime() + durationMinutes * 60 * 1000);
+    const now = new Date();
+    const end = new Date(now.getTime() + durationMinutes * 60 * 1000);
 
-  const battle = await IndividualBattle.create({
-    battleType,
-    player1: { userId: req.user._id, problemId: problemIds[0] },
-    player2: { userId: opponentId, problemId: problemIds[0] },
-    problemIds,
-    startTime: now,
-    endTime: end,
-    status: "active",
-  });
+    const battle = await IndividualBattle.create({
+      battleType,
+      player1: { userId: req.user._id, problemId: problemIds[0] },
+      player2: { userId: opponentId, problemId: problemIds[0] },
+      problemIds,
+      startTime: now,
+      endTime: end,
+      status: "active",
+    });
 
-  return res.status(201).json(new ApiResponse(201, { battle }, "battle created"));
+    return res.status(201).json(new ApiResponse(201, { battle }, "battle created"));
+  } catch (error) {
+    console.error("Error creating 1v1 battle:", error);
+    throw error;
+  }
 });
 
 const getBattle = AsyncHandler(async (req, res) => {

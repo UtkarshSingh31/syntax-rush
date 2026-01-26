@@ -1,5 +1,7 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import api from "@/lib/api";
+import { Edit3, Camera, MapPin, GraduationCap, Trophy, Swords, Zap } from "lucide-react";
 
 interface ProProps {
   user: any;
@@ -13,7 +15,8 @@ export default function Pro({ user, onUserUpdate }: ProProps) {
   const [profileDraft, setProfileDraft] = useState({
     fullname: user?.fullname || "",
     college: user?.college || "",
-    country: user?.country || ""
+    country: user?.country || "",
+    profilePicture: user?.profilePicture || ""
   });
   const [saving, setSaving] = useState(false);
 
@@ -22,7 +25,8 @@ export default function Pro({ user, onUserUpdate }: ProProps) {
     setProfileDraft({
       fullname: user?.fullname || "",
       college: user?.college || "",
-      country: user?.country || ""
+      country: user?.country || "",
+      profilePicture: user?.profilePicture || ""
     });
   }, [user]);
 
@@ -42,7 +46,16 @@ export default function Pro({ user, onUserUpdate }: ProProps) {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      const res = await api.patch("/auth/update-profile", profileDraft);
+      const formData = new FormData();
+      formData.append("fullname", profileDraft.fullname);
+      formData.append("college", profileDraft.college);
+      formData.append("country", profileDraft.country);
+
+      if (profileDraft.profilePicture instanceof File) {
+        formData.append("profilePicture", profileDraft.profilePicture);
+      }
+
+      const res = await api.patch("/auth/update-profile", formData);
       onUserUpdate(res.data.data.user);
       setIsEditingProfile(false);
     } catch (err) {
@@ -52,215 +65,203 @@ export default function Pro({ user, onUserUpdate }: ProProps) {
     }
   };
 
-  if (!user) return <div className="p-10 text-red-500">User not found. Please log in.</div>;
+  if (!user) return <div className="p-10 text-center text-gray-500">No user data available.</div>;
 
   return (
-    <div>
-      <div className="grid grid-cols-4 grid-rows-9 gap-4 min-h-[150vh] m-10 ml-10 ">
-        <div className="col-span-2 row-span-3 h-full w-full rounded-xl bg-[#6266F0] text-white p-6 flex gap-6">
-          <img
-            src={user.profilePicture || "/profile.png"}
-            alt="profile"
-            className="w-28 h-28 rounded-full object-cover border-4 border-white/20"
-          />
-          <div className="flex flex-col justify-between flex-1">
-            <div className="flex justify-between items-start">
-              <div>
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Profile Card */}
+        <div className="lg:col-span-2 bg-[#6266F0] rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-indigo-200">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+
+          <div className="relative flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+            <div className="relative group">
+              <div className="w-32 h-32 rounded-full border-4 border-white/30 p-1 bg-white/10 backdrop-blur-sm overflow-hidden">
+                <img
+                  src={
+                    profileDraft.profilePicture instanceof File
+                      ? URL.createObjectURL(profileDraft.profilePicture)
+                      : (profileDraft.profilePicture || user.profilePicture || "/profile.png")
+                  }
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              {isEditingProfile && (
+                <label htmlFor="pfp-upload" className="absolute bottom-0 right-0 p-2 bg-white text-[#6266F0] rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                  <Camera size={18} />
+                  <input
+                    id="pfp-upload"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setProfileDraft({ ...profileDraft, profilePicture: file });
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+
+            <div className="flex-1 space-y-4 py-2">
+              <div className="flex justify-between items-start">
+                <div>
+                  {isEditingProfile ? (
+                    <input
+                      value={profileDraft.fullname}
+                      onChange={(e) => setProfileDraft({ ...profileDraft, fullname: e.target.value })}
+                      className="bg-white/20 border border-white/30 rounded-lg px-3 py-1 text-2xl font-bold outline-none focus:ring-2 focus:ring-white/50 w-full"
+                    />
+                  ) : (
+                    <h1 className="text-3xl font-bold tracking-tight">{user.fullname}</h1>
+                  )}
+                  <p className="text-indigo-100/80 font-medium">@{user.username}</p>
+                </div>
+                <button
+                  onClick={() => isEditingProfile ? handleSaveProfile() : setIsEditingProfile(true)}
+                  className="px-6 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 rounded-xl font-semibold transition-all"
+                  disabled={saving}
+                >
+                  {isEditingProfile ? (saving ? "Saving..." : "Save Profile") : "Edit Profile"}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-2 text-indigo-100 text-xs font-medium mb-1 capitalize">
+                    <Trophy size={14} /> Points
+                  </div>
+                  <div className="text-2xl font-bold uppercase">{user.performanceStats?.totalPoints || 0}</div>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-2 text-indigo-100 text-xs font-medium mb-1 capitalize">
+                    <Swords size={14} /> Battles
+                  </div>
+                  <div className="text-2xl font-bold uppercase">{user.performanceStats?.battleParticipated || 0}</div>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-2 text-indigo-100 text-xs font-medium mb-1 capitalize">
+                    <Zap size={14} /> Win Rate
+                  </div>
+                  <div className="text-2xl font-bold uppercase">{user.performanceStats?.overAllWinRate || 0}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Global Stats */}
+        <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 flex flex-col justify-between">
+          <div className="space-y-6">
+            <h3 className="text-gray-800 font-bold text-lg mb-4">World Ranking</h3>
+            <div className="flex items-center gap-6">
+              <div className="text-5xl font-black text-[#6266F0] tracking-tighter">
+                #{user.performanceStats?.currentGlobalRank || "N/A"}
+              </div>
+              <div className="text-gray-500 text-sm leading-tight uppercase font-bold">
+                Global<br />Position
+              </div>
+            </div>
+          </div>
+          <div className="pt-6 border-t border-gray-50 grid grid-cols-2 gap-4 text-center">
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase mb-1">Solved</p>
+              <p className="text-lg font-bold text-gray-800">{user.performanceStats?.problemSolved || 0}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase mb-1">League</p>
+              <p className="text-lg font-bold text-emerald-600 uppercase tracking-wide text-xs">{user.performanceStats?.currentLeague || "Bronze"}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
+        {/* Education & Bio */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-gray-800 font-bold text-lg flex items-center gap-2">
+                <GraduationCap className="text-[#6266F0]" size={20} />
+                Identity & Location
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">College</span>
                 {isEditingProfile ? (
                   <input
-                    value={profileDraft.fullname}
-                    onChange={e => setProfileDraft({ ...profileDraft, fullname: e.target.value })}
-                    className="bg-white/20 border border-white/30 rounded px-2 py-1 text-xl font-bold outline-none mb-1"
+                    value={profileDraft.college}
+                    onChange={(e) => setProfileDraft({ ...profileDraft, college: e.target.value })}
+                    className="w-full border-b-2 border-indigo-100 focus:border-[#6266F0] outline-none py-2 font-semibold transition-all"
                   />
                 ) : (
-                  <h2 className="text-xl font-semibold">{user.fullname}</h2>
+                  <p className="font-semibold text-gray-700">{user.college || "Not specified"}</p>
                 )}
-                <p className="text-sm text-gray-300">@{user.username}</p>
               </div>
-              <button
-                onClick={() => isEditingProfile ? handleSaveProfile() : setIsEditingProfile(true)}
-                className="p-2 bg-white/10 rounded-lg hover:bg-white/20"
-                disabled={saving}
-              >
-                {isEditingProfile ? "Save" : "Edit"}
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-gray-300">Total Points</p>
-                <p className="text-lg font-semibold">{user.performanceStats?.totalPoints || 0}</p>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-gray-300">Battles</p>
-                <p className="text-lg font-semibold">{user.performanceStats?.battleParticipated || 0}</p>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-gray-300">Win rate</p>
-                <p className="text-lg font-semibold">{user.performanceStats?.overAllWinRate || 0}%</p>
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Country</span>
+                {isEditingProfile ? (
+                  <input
+                    value={profileDraft.country}
+                    onChange={(e) => setProfileDraft({ ...profileDraft, country: e.target.value })}
+                    className="w-full border-b-2 border-indigo-100 focus:border-[#6266F0] outline-none py-2 font-semibold transition-all"
+                  />
+                ) : (
+                  <p className="font-semibold text-gray-700">{user.country || "Not specified"}</p>
+                )}
               </div>
             </div>
-            <div className="mt-4 flex gap-2 flex-wrap">
-              {(user.skills && user.skills.length > 0 ? user.skills : ["No Skills Added"]).map((t: string) => (
-                <span
-                  key={t}
-                  className="text-xs px-3 py-1 rounded-full bg-white/10"
+          </div>
+
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-gray-800 font-bold text-lg flex items-center gap-2">
+                <Edit3 className="text-[#6266F0]" size={20} />
+                Personal Story
+              </h3>
+              {!isEditingAbout && (
+                <button
+                  onClick={() => setIsEditingAbout(true)}
+                  className="text-xs font-bold text-[#6266F0] hover:text-[#4d51bf] uppercase tracking-widest"
                 >
-                  {t}
-                </span>
+                  Edit Bio
+                </button>
+              )}
+            </div>
+            {isEditingAbout ? (
+              <div className="space-y-4">
+                <textarea
+                  value={aboutDraft}
+                  onChange={(e) => setAboutDraft(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-indigo-50 p-4 focus:border-[#6266F0] outline-none min-h-[150px] transition-all"
+                />
+                <div className="flex gap-2 justify-end">
+                  <button onClick={() => setIsEditingAbout(false)} className="px-4 py-2 rounded-xl border font-bold text-xs">Cancel</button>
+                  <button onClick={handleSaveAbout} className="px-6 py-2 rounded-xl bg-[#6266F0] text-white font-bold text-xs" disabled={saving}>Save Bio</button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-600 leading-relaxed font-medium">
+                {user.about || "No story shared yet."}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Skills sidebar */}
+        <div className="space-y-8">
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
+            <h3 className="text-gray-800 font-bold text-lg mb-6">Expertise</h3>
+            <div className="flex flex-wrap gap-2">
+              {(user.skills && user.skills.length > 0 ? user.skills : ["Generalist"]).map((skill: string) => (
+                <div key={skill} className="px-4 py-2 bg-indigo-50 text-[#6266F0] rounded-xl text-xs font-bold uppercase tracking-wider">
+                  {skill}
+                </div>
               ))}
             </div>
           </div>
-        </div>
-
-        <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-3 p-6">
-          <h3 className="text-gray-800 font-semibold mb-4">Account Overview</h3>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 p-4">
-              <p className="text-xs text-gray-500">Global Rank</p>
-              <p className="text-lg font-semibold text-gray-800">#{user.performanceStats?.currentGlobalRank === Infinity ? "N/A" : user.performanceStats?.currentGlobalRank}</p>
-            </div>
-            <div className="rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 p-4">
-              <p className="text-xs text-gray-500">Problems Solved</p>
-              <p className="text-lg font-semibold text-gray-800">{user.performanceStats?.problemSolved || 0}</p>
-            </div>
-            <div className="rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
-              <p className="text-xs text-gray-500">Current League</p>
-              <p className="text-lg font-semibold text-gray-800">{user.performanceStats?.currentLeague || "Unknown"}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-1 row-start-6 p-6">
-          <h3 className="text-gray-800 font-semibold mb-4">College & Location</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-gray-700">
-              <span className="font-medium">College:</span>
-              {isEditingProfile ? (
-                <input
-                  value={profileDraft.college}
-                  onChange={e => setProfileDraft({ ...profileDraft, college: e.target.value })}
-                  className="text-right border-b text-sm focus:border-indigo-500 outline-none"
-                />
-              ) : (
-                <span>{user.college || "Not set"}</span>
-              )}
-            </div>
-            <div className="flex items-center justify-between text-gray-700">
-              <span className="font-medium">Country:</span>
-              {isEditingProfile ? (
-                <input
-                  value={profileDraft.country}
-                  onChange={e => setProfileDraft({ ...profileDraft, country: e.target.value })}
-                  className="text-right border-b text-sm focus:border-indigo-500 outline-none"
-                />
-              ) : (
-                <span>{user.country || "Not set"}</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="row-span-4 h-full w-full bg-white rounded-xl shadow col-start-3 row-start-5 p-6 text-center flex flex-col items-center justify-center space-y-4">
-          <h3 className="text-gray-800 font-semibold">Activity Statistics</h3>
-          <p className="text-sm text-gray-500">Participated in {user.performanceStats?.contestsParticipated || 0} Contests</p>
-          <div className="w-24 h-24 rounded-full border-8 border-indigo-100 border-t-indigo-500 flex items-center justify-center">
-            <span className="text-xl font-bold">{user.performanceStats?.contestsWon || 0} Wins</span>
-          </div>
-        </div>
-
-        <div className="row-span-4 h-full w-full bg-white rounded-xl shadow col-start-4 row-start-5 p-6">
-          <h3 className="text-gray-800 font-semibold mb-2">
-            Badges
-          </h3>
-          <p className="text-xs text-gray-500 mb-4">
-            Collect badges by winning battles
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {user.performanceStats?.contestsWon > 0 && (
-              <div className="rounded-xl p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center text-xs text-yellow-800 font-semibold">
-                🏆 Champion
-              </div>
-            )}
-            {user.performanceStats?.battleWon > 10 && (
-              <div className="rounded-xl p-4 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-xs text-orange-800 font-semibold">
-                🔥 Warrior
-              </div>
-            )}
-            <div className="rounded-xl p-4 bg-gray-50 flex items-center justify-center text-xs text-gray-400 italic">
-              More coming soon
-            </div>
-          </div>
-        </div>
-
-        <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-1 row-start-8 p-6">
-          <h3 className="text-gray-800 font-semibold mb-4">Skills & Focus</h3>
-          <div className="flex gap-3 flex-wrap">
-            {(user.skills && user.skills.length > 0 ? user.skills : ["General"]).map((s: string, i: number) => (
-              <div
-                key={i}
-                className="px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-700"
-              >
-                {s}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-1 row-start-4 p-6">
-          <h3 className="text-gray-800 font-semibold mb-4">System Details</h3>
-          <div className="space-y-2 text-sm text-gray-700">
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Member Since:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
-            <p><strong>Verified:</strong> {user.isEmailVerified ? "✅ Yes" : "❌ No"}</p>
-          </div>
-        </div>
-
-        <div className="col-span-2 row-span-2 h-full w-full bg-white rounded-xl shadow col-start-3 row-start-3 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-800 font-semibold ">About</h3>
-            {!isEditingAbout && (
-              <button
-                className="text-xs px-3 py-1 rounded bg-gray-100 hover:bg-gray-200"
-                onClick={() => {
-                  setAboutDraft(user.about || "");
-                  setIsEditingAbout(true);
-                }}
-              >
-                Edit
-              </button>
-            )}
-          </div>
-          {!isEditingAbout && (
-            <p className="text-sm text-gray-700 overflow-y-auto  leading-6">
-              {user.about || "No bio added yet."}
-            </p>
-          )}
-          {isEditingAbout && (
-            <div className="space-y-3">
-              <textarea
-                value={aboutDraft}
-                onChange={(e) => setAboutDraft(e.target.value)}
-                rows={5}
-                className="w-full rounded border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
-              <div className="flex gap-2">
-                <button
-                  disabled={saving}
-                  className="px-4 py-1.5 rounded bg-[#6266F0] text-white text-xs font-semibold disabled:opacity-50"
-                  onClick={handleSaveAbout}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </button>
-                <button
-                  disabled={saving}
-                  className="px-4 py-1.5 rounded border text-xs font-semibold hover:bg-gray-50 disabled:opacity-50"
-                  onClick={() => setIsEditingAbout(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

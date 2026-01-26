@@ -31,7 +31,7 @@ class EmailService {
   hashOTP(otp) {
     return crypto
       .createHash('sha256')
-      .update(otp + process.env.JWT_SECRET)
+      .update(otp + (process.env.JWT_SECRET || process.env.SECRET_KEY))
       .digest('hex');
   }
 
