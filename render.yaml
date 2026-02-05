@@ -3,6 +3,7 @@ services:
   - type: web
     name: syntaxrush-backend
     env: node
+    plan: free
     rootDir: backend
     buildCommand: npm install
     startCommand: npm start
@@ -36,6 +37,7 @@ services:
   - type: web
     name: syntaxrush-frontend
     env: node
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     startCommand: npm start
