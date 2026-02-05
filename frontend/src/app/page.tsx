@@ -16,7 +16,7 @@ export default function Home() {
 
         <div className="container mx-auto px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-black uppercase tracking-widest mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Zap size={16} className="fill-indigo-600" /> Season 1 is Live
+            
           </div>
 
           <h1 className="text-6xl md:text-8xl font-black text-[#232B36] tracking-tighter mb-8 leading-[0.9] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
@@ -100,11 +100,10 @@ export default function Home() {
       <footer className="py-12 border-t border-gray-100">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#6266F0] rounded-lg flex items-center justify-center text-white font-black text-xl italic">A</div>
-            <span className="text-[#232B36] font-black tracking-tighter text-xl uppercase">Antigravity Arena</span>
+            <span className="text-[#232B36] font-black tracking-tighter text-xl uppercase">Syntax Rush</span>
           </div>
           <div className="text-gray-400 text-sm font-medium">
-            © 2026 Antigravity Arena. All rights reserved.
+            © 2026 Syntax Rush. All rights reserved.
           </div>
           <div className="flex gap-8 text-sm font-black text-gray-500 uppercase tracking-widest">
             <a href="#" className="hover:text-[#6266F0] transition-colors">Twitter</a>

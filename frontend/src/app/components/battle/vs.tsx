@@ -174,7 +174,7 @@ export default function Vs() {
                       )}
                     </div>
                     <h3 className="text-2xl font-black mb-1 uppercase tracking-tighter">{user?.username || "Guest"}</h3>
-                    <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white/5">Bronze II</span>
+                    <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white/5">{user?.performanceStats?.currentLeague || "Standard"}</span>
 
                     <div className="grid grid-cols-3 gap-3 w-full mt-10">
                       <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-center">

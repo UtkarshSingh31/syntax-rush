@@ -24,93 +24,69 @@ export default function SideBar({ activeTab, setActiveTab, user }: SideBarProps)
   };
 
   return (
-    <div className="bg-[#F0F1F6] flex flex-col pt-20 pb-10 px-8 h-full w-full border-r border-gray-100">
-      <div
-        className="fixed top-24 left-6 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors z-50"
-        onClick={() => (window.location.href = "/problem")}
-      >
-        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm border border-gray-100 font-bold text-sm">
-          ✕
-        </div>
-      </div>
-
-      <div className="flex flex-col items-center mb-12">
-        <div className="relative group">
-          <div className="w-24 h-24 rounded-full p-1 bg-white shadow-md border border-gray-100">
-            <img
-              src={user?.profilePicture || "/profile.png"}
-              alt="Profile"
-              className="w-full h-full rounded-full object-cover"
-            />
+    <div className="bg-[#F0F1F6] flex flex-col h-full w-full border-r border-gray-100">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+        <div
+          className="mb-8 text-gray-400 cursor-pointer hover:text-[#6266F0] transition-colors flex items-center gap-2 group"
+          onClick={() => (window.location.href = "/problem")}
+        >
+          <div className="w-8 h-8 flex items-center justify-center rounded-xl bg-white shadow-sm border border-gray-100 font-bold text-xs group-hover:bg-indigo-50 transition-all">
+            ✕
           </div>
+          <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Exit Profile</span>
+        </div>
 
+        <div className="flex flex-col items-center mb-8 pb-8 border-b border-gray-200/50">
+          <div className="relative group p-1 bg-white rounded-full shadow-xl shadow-indigo-100/50 border border-gray-100">
+            <div className="w-20 h-20 rounded-full overflow-hidden">
+              <img
+                src={user?.profilePicture || "/profile.png"}
+                alt="Profile"
+                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+              />
+            </div>
+          </div>
+          <div className="mt-4 text-center px-2">
+            <h2 className="text-[#232B36] text-lg font-black tracking-tighter truncate w-full max-w-[180px]">
+              {user?.fullname || "User"}
+            </h2>
+            <p className="text-indigo-500 text-[10px] font-black uppercase tracking-widest mt-0.5">@{user?.username || "username"}</p>
+          </div>
         </div>
-        <div className="mt-4 text-center">
-          <h2 className="text-[#232B36] text-xl font-bold tracking-tight">
-            {user?.fullname || "User"}
-          </h2>
-          <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">@{user?.username || "username"}</p>
-        </div>
+
+        <nav className="flex flex-col gap-1.5 w-full">
+          {[
+            { id: "profile", label: "Identity", icon: FiUser },
+            { id: "leaderboard", label: "Rankings", icon: FiAward },
+            { id: "group", label: "Squads", icon: FiUsers },
+            { id: "friends", label: "Network", icon: FiUsers },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              className={`flex items-center gap-4 px-5 py-3.5 transition-all group
+                    ${activeTab === tab.id
+                  ? "bg-white text-[#6266F0] rounded-xl shadow-sm border border-gray-50"
+                  : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-xl"
+                }
+                `}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <tab.icon size={16} className={activeTab === tab.id ? "text-[#6266F0]" : "text-gray-300 group-hover:text-gray-400"} />
+              <span className="text-[9px] font-black uppercase tracking-[0.15em]">{tab.label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
-      <nav className="flex flex-col gap-2 w-full">
-        <button
-          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
-            ${activeTab === "profile"
-              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
-              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
-            }
-          `}
-          onClick={() => setActiveTab("profile")}
-        >
-          <FiUser size={18} />
-          <span>Profile</span>
-        </button>
-        <button
-          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
-            ${activeTab === "leaderboard"
-              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
-              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
-            }
-          `}
-          onClick={() => setActiveTab("leaderboard")}
-        >
-          <FiAward size={18} />
-          <span>Leaderboard</span>
-        </button>
-        <button
-          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
-            ${activeTab === "group"
-              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
-              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
-            }
-          `}
-          onClick={() => setActiveTab("group")}
-        >
-          <FiUsers size={18} />
-          <span>Group</span>
-        </button>
-        <button
-          className={`flex items-center gap-4 px-6 py-4 text-sm font-bold transition-all
-            ${activeTab === "friends"
-              ? "bg-white text-[#6266F0] rounded-2xl shadow-sm border border-gray-50"
-              : "text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 rounded-2xl"
-            }
-          `}
-          onClick={() => setActiveTab("friends")}
-        >
-          <FiUsers size={18} />
-          <span>Friends</span>
-        </button>
-      </nav>
-
-      <div className="mt-auto pt-10 border-t border-gray-200/50">
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200/50 bg-[#F0F1F6]">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-4 px-6 py-4 text-sm font-bold text-gray-400 hover:text-red-500 hover:bg-red-50/50 rounded-2xl transition-all w-full"
+          className="flex items-center gap-4 px-5 py-4 group text-gray-400 hover:text-red-500 hover:bg-red-50/50 rounded-xl transition-all w-full"
         >
-          <FiLogOut size={18} />
-          <span>Log Out</span>
+          <FiLogOut size={16} className="text-gray-300 group-hover:text-red-400" />
+          <span className="text-[9px] font-black uppercase tracking-[0.15em]">logout</span>
         </button>
       </div>
     </div>

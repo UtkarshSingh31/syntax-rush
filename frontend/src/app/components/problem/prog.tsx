@@ -115,46 +115,57 @@ export default function Prog({ battleId }: { battleId?: string | null }) {
   }, [battleId, user]);
 
   return (
-    <div className="flex mt-5 flex-col md:flex-row justify-between items-center bg-white border-4 border-[#EBEBF3] rounded-3xl w-full h-fit p-6 transition-all">
-      <div className="flex flex-row md:w-[70%] items-center md:justify-between w-full">
-        <CircularProgress
-          value={myProgress}
-          max={100}
-          label="Your Progress"
-          sublabel={`${myProgress}%`}
-        />
+    <div className="flex flex-col md:flex-row justify-between items-center bg-white border border-gray-100 rounded-[3.5rem] w-full p-10 transition-all shadow-sm">
+      <div className="flex flex-col md:flex-row md:w-[70%] items-center justify-center md:justify-around gap-12 w-full">
+        <div className="flex flex-col items-center">
+          <CircularProgress
+            value={myProgress}
+            max={100}
+            label="Me"
+            sublabel={`${myProgress}%`}
+          />
+          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mt-4">Current Progress</p>
+        </div>
 
         {battleId && (
-          <CircularProgress
-            value={opponentProgress}
-            max={100}
-            label="Opponent Progress"
-            sublabel={`${opponentProgress}%`}
-          />
+          <div className="flex flex-col items-center">
+            <CircularProgress
+              value={opponentProgress}
+              max={100}
+              label="Opponent"
+              sublabel={`${opponentProgress}%`}
+            />
+            <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mt-4">Enemy Progress</p>
+          </div>
         )}
 
         {!battleId && (
-          <CircularProgress
-            value={user?.performanceStats?.battleWon || 0}
-            max={100}
-            label="Accuracy Rate"
-            sublabel={`${user?.performanceStats?.totalPoints || 0} PTS`}
-          />
+          <div className="flex flex-col items-center">
+            <CircularProgress
+              value={user?.performanceStats?.battleWon || 0}
+              max={100}
+              label="Victories"
+              sublabel={`${user?.performanceStats?.battleWon || 0}`}
+            />
+            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mt-4">Battle Stats</p>
+          </div>
         )}
       </div>
 
-      <div className="flex scale-90 md:scale-100 flex-col mt-6 text-center items-center">
-        <div className="mb-4">
-          <span className="text-[#6266F0] text-2xl sm:text-3xl font-semibold">
-            <span className="text-gray-900">3h</span> 40min
-          </span>
-          <div className="text-gray-400 text-xs sm:text-sm">this week</div>
+      <div className="hidden md:flex flex-col gap-6 pl-12 border-l border-gray-50">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Global Time</span>
+          </div>
+          <p className="text-2xl font-black text-[#232B36]">3h <span className="text-gray-300">40m</span></p>
         </div>
         <div>
-          <span className="text-[#6266F0] text-2xl sm:text-3xl font-semibold">
-            <span className="text-gray-900">6d 9h</span> 25min
-          </span>
-          <div className="text-gray-400 text-xs sm:text-sm">this month</div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Monthly Goal</span>
+          </div>
+          <p className="text-2xl font-black text-[#232B36]">6d <span className="text-gray-300">9h</span></p>
         </div>
       </div>
     </div>

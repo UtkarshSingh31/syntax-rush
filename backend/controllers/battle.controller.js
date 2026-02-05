@@ -150,32 +150,54 @@ const submitToBattle = AsyncHandler(async (req, res) => {
   // Award Points & Update User Stats when battle completes
   if (battle.status === "completed") {
     const { User } = await import("../models/user.model.js");
+    const { default: matchmaker } = await import("../utils/matchmaker.js");
 
-    // Player 1
-    const p1Bonus = String(battle.winner) === String(battle.player1.userId) ? 50 : 0;
-    await User.findByIdAndUpdate(battle.player1.userId, {
-      $inc: {
-        "performanceStats.totalPoints": 10 + p1Bonus,
-        "performanceStats.battlePoints": 10 + p1Bonus,
-        "performanceStats.battleParticipated": 1,
-        "performanceStats.battleWon": p1Bonus ? 1 : 0,
-        "performanceStats.battleLost": p1Bonus ? 0 : 1
-      },
-      $set: { "performanceStats.lastBattleAt": new Date() }
-    });
+    const p1 = await User.findById(battle.player1.userId);
+    const p2 = await User.findById(battle.player2.userId);
 
-    // Player 2
-    const p2Bonus = String(battle.winner) === String(battle.player2.userId) ? 50 : 0;
-    await User.findByIdAndUpdate(battle.player2.userId, {
-      $inc: {
-        "performanceStats.totalPoints": 10 + p2Bonus,
-        "performanceStats.battlePoints": 10 + p2Bonus,
-        "performanceStats.battleParticipated": 1,
-        "performanceStats.battleWon": p2Bonus ? 1 : 0,
-        "performanceStats.battleLost": p2Bonus ? 0 : 1
-      },
-      $set: { "performanceStats.lastBattleAt": new Date() }
-    });
+    if (p1 && p2) {
+      const r1 = p1.performanceStats?.battlePoints || 1200;
+      const r2 = p2.performanceStats?.battlePoints || 1200;
+
+      const isP1Winner = String(battle.winner) === String(p1._id);
+      const isP2Winner = String(battle.winner) === String(p2._id);
+      const resultA = isP1Winner ? 1 : isP2Winner ? 0 : 0.5;
+
+      const newR1 = matchmaker.constructor.calculateEloUpdate(r1, r2, resultA);
+      const newR2 = matchmaker.constructor.calculateEloUpdate(r2, r1, 1 - resultA);
+
+      // Player 1 Update
+      const p1League = matchmaker.constructor.getLeague(newR1);
+      await User.findByIdAndUpdate(p1._id, {
+        $set: {
+          "performanceStats.battlePoints": newR1,
+          "performanceStats.currentLeague": p1League,
+          "performanceStats.lastBattleAt": new Date()
+        },
+        $inc: {
+          "performanceStats.totalPoints": resultA === 1 ? 50 : 10,
+          "performanceStats.battleParticipated": 1,
+          "performanceStats.battleWon": resultA === 1 ? 1 : 0,
+          "performanceStats.battleLost": resultA === 0 ? 1 : 0
+        }
+      });
+
+      // Player 2 Update
+      const p2League = matchmaker.constructor.getLeague(newR2);
+      await User.findByIdAndUpdate(p2._id, {
+        $set: {
+          "performanceStats.battlePoints": newR2,
+          "performanceStats.currentLeague": p2League,
+          "performanceStats.lastBattleAt": new Date()
+        },
+        $inc: {
+          "performanceStats.totalPoints": resultA === 0 ? 50 : 10,
+          "performanceStats.battleParticipated": 1,
+          "performanceStats.battleWon": resultA === 0 ? 1 : 0,
+          "performanceStats.battleLost": resultA === 1 ? 1 : 0
+        }
+      });
+    }
   }
 
   return res.status(200).json(new ApiResponse(200, { battle, submission: sub }, "battle submission processed"));

@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import matchmaker from "../utils/matchmaker.js";
 
 const socketManager = (server) => {
   const io = new Server(server, {
@@ -9,7 +10,65 @@ const socketManager = (server) => {
   });
 
   const rooms = new Map();
-  let matchmakingQueue = []; // { socketId, user, matchType }
+
+  // Periodic task to expand matchmaking tolerances and find matches
+  setInterval(() => {
+    matchmaker.expandTolerances();
+
+    // Attempt to match players who are waiting
+    const processedUsers = new Set();
+
+    for (const entry of matchmaker.queue) {
+      if (processedUsers.has(String(entry.user._id))) continue;
+
+      const match = matchmaker.findMatch(entry.user._id);
+      if (match) {
+        const [p1, p2] = match;
+        processedUsers.add(String(p1.user._id));
+        processedUsers.add(String(p2.user._id));
+        createMatch(p1, p2);
+      }
+    }
+  }, 5000); // Check every 5 seconds
+
+  async function createMatch(playerA, playerB) {
+    try {
+      const { IndividualBattle } = await import("../models/IndividualBattle.model.js");
+      const { Problem } = await import("../models/problem.model.js");
+
+      const problems = await Problem.find({});
+      if (!problems.length) {
+        io.to(playerA.socketId).emit("match_error", "No problems available for battle");
+        io.to(playerB.socketId).emit("match_error", "No problems available for battle");
+        return;
+      }
+      const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+
+      const now = new Date();
+      const durationMinutes = 20;
+      const end = new Date(now.getTime() + durationMinutes * 60 * 1000);
+
+      const battle = await IndividualBattle.create({
+        battleType: playerA.matchType,
+        player1: { userId: playerA.user._id, problemId: randomProblem._id },
+        player2: { userId: playerB.user._id, problemId: randomProblem._id },
+        problemIds: [randomProblem._id],
+        startTime: now,
+        endTime: end,
+        status: "active",
+      });
+
+      // Notify both players
+      io.to(playerA.socketId).emit("match_found", { battle, opponent: playerB.user });
+      io.to(playerB.socketId).emit("match_found", { battle, opponent: playerA.user });
+
+      console.log(`Match created: ${playerA.user.username} vs ${playerB.user.username}`);
+    } catch (err) {
+      console.error("Battle creation error:", err);
+      io.to(playerA.socketId).emit("match_error", "Failed to create battle");
+      io.to(playerB.socketId).emit("match_error", "Failed to create battle");
+    }
+  }
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
@@ -17,60 +76,19 @@ const socketManager = (server) => {
     socket.on("start_matchmaking", async ({ user, matchType }) => {
       console.log(`${user.username} started matchmaking for ${matchType}`);
 
-      // 1. Remove user if already in queue (prevents duplicates)
-      matchmakingQueue = matchmakingQueue.filter(p => String(p.user._id) !== String(user._id));
+      // Add player to matchmaker queue
+      matchmaker.addPlayer(socket.id, user, matchType);
 
-      // 2. Check for a compatible opponent
-      const opponent = matchmakingQueue.find(p => p.matchType === matchType && String(p.user._id) !== String(user._id));
-
-      if (opponent) {
-        // MATCH FOUND!
-        matchmakingQueue = matchmakingQueue.filter(p => p.socketId !== opponent.socketId);
-
-        try {
-          // 3. Create a shared battle in the database
-          const { IndividualBattle } = await import("../models/IndividualBattle.model.js");
-          const { Problem } = await import("../models/problem.model.js");
-
-          const problems = await Problem.find({});
-          if (!problems.length) {
-            socket.emit("match_error", "No problems available for battle");
-            return;
-          }
-          const randomProblem = problems[Math.floor(Math.random() * problems.length)];
-
-          const now = new Date();
-          const durationMinutes = 20;
-          const end = new Date(now.getTime() + durationMinutes * 60 * 1000);
-
-          const battle = await IndividualBattle.create({
-            battleType: matchType,
-            player1: { userId: opponent.user._id, problemId: randomProblem._id },
-            player2: { userId: user._id, problemId: randomProblem._id },
-            problemIds: [randomProblem._id],
-            startTime: now,
-            endTime: end,
-            status: "active",
-          });
-
-          // 4. Notify both players
-          io.to(socket.id).emit("match_found", { battle, opponent: opponent.user });
-          io.to(opponent.socketId).emit("match_found", { battle, opponent: user });
-
-          console.log(`Match found: ${opponent.user.username} vs ${user.username}`);
-        } catch (err) {
-          console.error("Matchmaking error:", err);
-          socket.emit("match_error", "Failed to create battle");
-        }
-      } else {
-        // 5. Add to queue
-        matchmakingQueue.push({ socketId: socket.id, user, matchType });
-        console.log(`User ${user.username} added to queue. Queue size: ${matchmakingQueue.length}`);
+      // Immediate match check
+      const match = matchmaker.findMatch(user._id);
+      if (match) {
+        const [p1, p2] = match;
+        createMatch(p1, p2);
       }
     });
 
     socket.on("cancel_matchmaking", ({ userId }) => {
-      matchmakingQueue = matchmakingQueue.filter(p => String(p.user._id) !== String(userId));
+      matchmaker.removePlayer(userId);
       console.log(`User ${userId} cancelled matchmaking`);
     });
 
@@ -102,7 +120,11 @@ const socketManager = (server) => {
     });
 
     socket.on("disconnect", () => {
-      matchmakingQueue = matchmakingQueue.filter(p => p.socketId !== socket.id);
+      // Find user by socketId to remove from queue
+      const entry = matchmaker.queue.find(p => p.socketId === socket.id);
+      if (entry) {
+        matchmaker.removePlayer(entry.user._id);
+      }
       console.log("User disconnected:", socket.id);
     });
   });

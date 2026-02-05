@@ -50,14 +50,14 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#F7F8FD]">
       <NavBar />
-      <div className="flex pt-20">
+      <div className="flex pt-[90px]">
         {/* Sidebar */}
-        <div className="w-64 fixed left-0 top-0 h-screen border-r bg-[#F0F1F6] z-10">
+        <div className="w-64 fixed left-0 top-[90px] h-[calc(100vh-90px)] border-r bg-[#F0F1F6] z-10">
           <SideBar activeTab={activeTab} setActiveTab={setActiveTab} user={user} />
         </div>
 
         {/* Main Content */}
-        <div className="ml-64 flex-1">
+        <div className="ml-64 flex-1 min-h-[calc(100vh-90px)]">
           {renderContent()}
         </div>
       </div>
